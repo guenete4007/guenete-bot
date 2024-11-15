@@ -1,0 +1,38 @@
+var room = HBInit({
+    roomName: "guenete", // Nombre de tu sala
+    maxPlayers: 16,
+    noPlayer: true // Elimina al jugador anfitrión
+});
+room.setDefaultStadium("Big");
+room.setScoreLimit(5);
+room.setTimeLimit(0);
+
+room.onGameStart = function() {
+    var bot = room.createPlayer({
+        name: "Bot",
+        team: 1,
+        x: 0,
+        y: 0,
+        isBot: true
+    });
+
+    function moveBotTowardsBall() {
+        var ball = room.getBall();
+        var botPlayer = room.getPlayerList().find(player => player.name === "Bot");
+
+        if (ball && botPlayer) {
+            var botPosition = botPlayer.position;
+            var ballPosition = ball.position;
+
+            var directionX = ballPosition.x - botPosition.x;
+            var directionY = ballPosition.y - botPosition.y;
+
+            var angle = Math.atan2(directionY, directionX);
+
+            room.setPlayerAngle(botPlayer.id, angle);
+            room.setPlayerSpeed(botPlayer.id, 0.7);
+        }
+    }
+
+    setInterval(moveBotTowardsBall, 1000);
+};
